@@ -2,6 +2,35 @@
 
 Catatan kronologis: apa yang dikerjakan, keputusan yang diambil, dan alasannya. Entri terbaru di atas.
 
+## 2026-10-23, v0.4 landing page bahasa sederhana
+
+### Masukan
+
+Pemilik produk mengetes ke orang yang baru melihat: masih bingung. Diminta agar halaman bisa dipahami semua orang tanpa dijelaskan, dan tautan GitHub dihapus.
+
+### Diagnosis
+
+- Terlalu banyak istilah internal: berkas, konteks, rubrik, tingkat bukti, fase, karantina, kode AF.
+- Terlalu banyak bagian (9) dan tabel teknis.
+- Pembuka abstrak; contoh hasil (merah vs hijau) baru terlihat jauh di bawah.
+- Simulasi interaktif menuntut beberapa langkah (tambah konteks, kunci, baru kirim usulan) sebelum ada hasil.
+
+### Dikerjakan
+
+- Halaman ditulis ulang dengan bahasa sehari-hari; pembuka langsung menampilkan contoh usulan merah dan hijau.
+- Bagian "Cara kerja" 4 langkah dengan visual kecil.
+- Tur dipangkas dari 7 ke 5 langkah, alasan merah/hijau ditulis manual dalam bahasa manusia.
+- Komponen baru `QuickTry`: satu kotak tulis, tiga contoh (matang, asal-asalan, curang), hasil berupa nilai, label posisi, dan 4 pertanyaan bercentang. Simulasi lengkap dipindah ke lipatan.
+- Peran AI dan anti-kecurangan disederhanakan; tabel kode AF, daftar tingkat bukti, dan bagian status dihapus dari halaman.
+- Tautan GitHub dan rujukan ke repositori dihapus dari halaman.
+- Sapaan konsisten "Anda".
+
+### Verifikasi
+
+- `npm run typecheck`, `npm test` (13 lulus), `npm run build` lulus.
+- Playwright 375px dan 1280px, terang dan gelap: tur maju sendiri, alur coba (nilai 83 / 5 / ditahan), lipatan fitur lengkap terbuka, titik tidak bertumpuk, tabel paket muat di HP, tanpa scroll horizontal, tanpa galat konsol, tidak ada teks "github" di HTML.
+- Belum diuji ulang ke orang baru.
+
 ## 2026-10-23, v0.3 landing page karhutla, tur animasi, skala, paket
 
 ### Dikerjakan

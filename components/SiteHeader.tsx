@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 const NAV = [
   { href: "#cara-kerja", label: "Cara kerja" },
+  { href: "#contoh", label: "Contoh" },
   { href: "#coba", label: "Coba" },
-  { href: "#peran-ai", label: "Peran AI" },
-  { href: "#kecurangan", label: "Anti-kecurangan" },
+  { href: "#untuk-siapa", label: "Untuk siapa" },
   { href: "#paket", label: "Paket" },
 ];
 

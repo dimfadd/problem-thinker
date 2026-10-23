@@ -116,8 +116,8 @@ export function ScaleView() {
   return (
     <div className="panel scaleview">
       <div className="panel-title">
-        <h3>{fmt(DATA.total)} usulan untuk satu berkas</h3>
-        <span className="mono step-no">Data simulasi</span>
+        <h3>{fmt(DATA.total)} orang mengusulkan untuk satu masalah</h3>
+        <span className="step-no">Contoh simulasi</span>
       </div>
 
       <div ref={ref} className="sv-body">
@@ -140,7 +140,7 @@ export function ScaleView() {
         </div>
 
         {/* lapis 2: klaster */}
-        <div className="sv-bubbles" style={{ height: lay ? lay.height + 20 : 120 }} role="group" aria-label="Klaster usulan mirip">
+        <div className="sv-bubbles" style={{ height: lay ? lay.height + 20 : 120 }} role="group" aria-label="Kelompok usulan yang mirip">
           {lay?.placed.map((p) => {
             const c = CLUSTERS.find((x) => x.id === p.id)!;
             return (
@@ -149,7 +149,7 @@ export function ScaleView() {
                 type="button"
                 className="sv-bubble"
                 aria-pressed={selected === p.id}
-                aria-label={`${c.label}: ${c.count} usulan, rata-rata skor ${c.mean}`}
+                aria-label={`${c.label}: ${c.count} usulan, rata-rata nilai ${c.mean}`}
                 style={{ left: p.x - p.r, top: p.y + 4, width: p.r * 2, height: p.r * 2, ["--pos" as string]: `${c.mean}%` }}
                 onClick={() => setSelected(p.id)}
               >
@@ -160,24 +160,26 @@ export function ScaleView() {
         </div>
       </div>
 
+      <p className="qt-hint">Ketuk gelembung untuk melihat isi usulan di dalamnya.</p>
+
       {/* lapis 3: detail & posisi Anda */}
       <div className="sv-detail" aria-live="polite">
         <div>
           <div className="sv-detail-head">
             <strong>{sel.label}</strong>
             <span className="mono">
-              {fmt(sel.count)} usulan · skor {lo} sampai {hi}
+              {fmt(sel.count)} usulan · nilai {lo} sampai {hi}
             </span>
           </div>
           <p className="tour-quote">Contoh isi: &ldquo;{sel.example}&rdquo;</p>
           <p className="hint" style={{ marginTop: 6, color: "var(--ink-2)", fontSize: "0.8125rem" }}>
-            Setiap usulan di klaster ini tetap bisa dibuka satu per satu, lengkap dengan skor dan alasannya.
+            Setiap usulan di kelompok ini tetap bisa dibaca satu per satu, lengkap dengan nilai dan alasannya.
           </p>
         </div>
         <div className="sv-you-card">
           <span className="mono">Posisi Anda</span>
           <strong>
-            {YOUR_SCORE}/100 · peringkat {fmt(DATA.rank)} dari {fmt(DATA.total)}
+            Nilai {YOUR_SCORE} · peringkat {fmt(DATA.rank)} dari {fmt(DATA.total)}
           </strong>
         </div>
       </div>

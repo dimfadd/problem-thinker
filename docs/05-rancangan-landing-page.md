@@ -8,24 +8,31 @@ Status: dibangun di `app/page.tsx` dan `components/Simulator.tsx`, v0.1
 2. Membiarkan pengunjung **mencoba** alurnya tanpa akun: tambah konteks bersumber, kunci konteks, kirim usulan, lihat skor dan aturan anti-kecurangan.
 3. Jujur soal status: belum ada akun, data nyata, atau AI sungguhan.
 
-## 2. Urutan bagian (v0.3)
+## 2. Urutan bagian (v0.4, bahasa sederhana)
 
-Urutan mengikuti pertanyaan pengunjung: "ini apa?", "bagaimana cara kerjanya?", "boleh saya coba?", "kalau ramai bagaimana?", "AI-nya ngapain?", "bisa dicurangi?", "untuk siapa?", "berapa?".
+Masukan uji pengguna (pemilik produk mengetes ke orang baru): versi v0.3 membingungkan. Penyebab: istilah internal (berkas, konteks, rubrik, tingkat bukti, fase, karantina, kode AF), 9 bagian, dan tabel teknis. v0.4 ditulis ulang dengan aturan:
 
-| # | Bagian | Isi | Alasan ada |
-|---|---|---|---|
-| 0 | Pembuka | Judul, penjelasan, tombol "Tonton cara kerjanya" dan "Coba simulasi sendiri", pratinjau berkas karhutla | Janji produk + bentuk berkas |
-| § 1 | Cara kerja | Tur animasi 7 langkah yang berjalan sendiri | Pengunjung paham tanpa harus mengklik apa pun |
-| § 2 | Coba sendiri | Simulasi interaktif berkas karhutla | Pengunjung merasakan aturan bekerja |
-| § 3 | Ribuan usulan | Sebaran + klaster + posisi Anda (1.562 usulan simulasi) | Menjawab "kalau usulannya banyak, titiknya bertumpuk?" |
-| § 4 | Peran AI | Yang dikerjakan dan yang tidak dikerjakan AI | Menjawab "kenapa ada AI dan seberapa jauh perannya?" |
-| § 5 | Cara menilai | Rubrik 35/25/20/20, batas skor, tingkat bukti | "Kenapa skor saya segini?" |
-| § 6 | Anti-kecurangan | Tabel AF-01 sampai AF-13 | Kekhawatiran utama pemilik berkas |
-| § 7 | Untuk siapa | Pemerintah, perusahaan, organisasi | Pengaturan per jenis ruang |
-| § 8 | Paket | Gratis / berlangganan / kontrak (harga belum ditetapkan) | Dasar komersialisasi |
-| § 9 | Status | Sudah ada vs berikutnya | Kejujuran tahap pengerjaan |
+- Bahasa sehari-hari. "Konteks" menjadi "fakta", "skor" menjadi "nilai", "karantina" menjadi "ditahan untuk diperiksa admin".
+- Satu gagasan per bagian, kalimat pendek.
+- Pengunjung bisa paham hanya dari pembuka: contoh usulan merah dan hijau langsung terlihat.
+- Fitur lengkap tetap ada, tetapi disembunyikan di bawah tombol "Mau mencoba fitur lengkapnya?".
+- Tidak ada tautan ke repositori kode.
 
-Sengaja tidak ada: testimoni, angka pengguna, logo klien, FAQ, angka harga. Belum ada data nyata untuk semua itu.
+| # | Bagian | Isi |
+|---|---|---|
+| 0 | Pembuka | "Cari solusi terbaik untuk sebuah masalah, bersama-sama, berdasarkan fakta." + contoh garis dengan usulan D (merah, 15) dan A (hijau, 93) beserta alasan singkat |
+| § 1 | Cara kerja | 4 langkah: tulis masalah, tambah fakta bersumber, orang mengusulkan, AI menilai di garis |
+| § 2 | Contoh | Tur animasi 5 langkah kasus karhutla, berjalan sendiri |
+| § 3 | Coba | Tulis usulan, lihat nilai, posisi di garis, dan 4 pertanyaan dengan tanda centang/silang. Fitur lengkap di dalam lipatan |
+| § 4 | Peran AI | 4 pertanyaan penilaian (dengan bobot) + yang tidak dilakukan AI |
+| § 5 | Sulit dicurangi | 6 pasangan "kalau ada yang ... / yang terjadi ..." |
+| § 6 | Ribuan usulan | Gelembung kelompok usulan mirip |
+| § 7 | Untuk siapa | Pemerintah, perusahaan, organisasi, dengan contoh |
+| § 8 | Paket | Tabel gratis / berlangganan / kontrak, harga belum ditetapkan |
+
+Dihapus dari halaman (tetap ada di dokumen): tabel kode anti-kecurangan, daftar tingkat bukti, bagian status pengerjaan, tautan GitHub.
+
+Batas yang perlu diketahui: penyederhanaan ini belum diuji ulang ke orang baru. Uji berikutnya sebaiknya: minta 3 sampai 5 orang membuka halaman tanpa penjelasan, lalu tanyakan "aplikasi ini untuk apa?" dan "apa peran AI-nya?".
 
 ## 3. Skenario: karhutla
 
@@ -53,14 +60,14 @@ Usulan contoh (skor heuristik terhadap konteks di atas):
 | D | Usir semua perusahaan asing | 15 |
 | E | Pemerintah harus lebih tegas | 0 |
 
-## 3a. Tur animasi (§ 1)
+## 3a. Tur animasi (§ 2)
 
 - Berjalan sendiri saat panggung tur terlihat minimal 30% di layar; berhenti saat keluar layar. Tidak berjalan sendiri bila pengguna memilih gerak minimal (`prefers-reduced-motion`).
 - Kontrol: putar/jeda, mundur, maju, lompat ke langkah mana pun. Setelah disentuh pengguna, tur tidak lagi dikendalikan posisi scroll.
-- Langkah: (1) masalah dibuka, (2) konteks bersumber, (3) AI memeriksa sumber dan menandai [3], (4) pemilik berkas tidak bisa membatalkan peringatan, saksi, konteks dikunci, (5) usulan masuk dan dinilai dengan rubrik, (6) kiriman ulang ditolak dan perintah ke AI dikarantina, (7) contoh merah (D) dan hijau (A) beserta alasannya.
+- Langkah (v0.4): (1) ada masalah, (2) orang menambahkan fakta dengan sumber, (3) AI mengecek sumber dan menandai klaim media sosial "sumbernya tidak bilang begitu", (4) orang mengirim usulan dan AI menilai dengan 4 pertanyaan, (5) contoh merah (D) dan hijau (A) dengan alasan dalam bahasa sehari-hari.
 - Di HP: narasi dan kontrol di atas panggung, hanya langkah aktif yang tampil.
 
-## 3b. Tampilan ribuan usulan (§ 3)
+## 3b. Tampilan ribuan usulan (§ 6)
 
 Satu titik per akun hanya terbaca sampai sekitar 30 sampai 50 usulan. Untuk berkas besar, garis yang sama ditampilkan dalam tiga lapis:
 
@@ -70,7 +77,7 @@ Satu titik per akun hanya terbaca sampai sekitar 30 sampai 50 usulan. Untuk berk
 
 Aturan peralihan di aplikasi: <= 50 usulan memakai titik per akun; > 50 memakai tiga lapis; selalu bisa membuka daftar usulan satu per satu dari klaster atau rentang skor.
 
-## 3c. Spesifikasi simulasi interaktif (§ 2)
+## 3c. Simulasi lengkap (di dalam lipatan § 3)
 
 Alur:
 
