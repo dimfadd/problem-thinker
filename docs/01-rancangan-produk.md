@@ -115,3 +115,23 @@ Belum ada data. Yang akan diukur:
 | Biaya AI membengkak | Tidak berkelanjutan | Kuota per ruang kerja, cek duplikat sebelum memanggil AI, cache hasil |
 | Isu politik sensitif | Tekanan, serangan akun palsu | Verifikasi berlapis, moderasi, catatan audit |
 | Data pribadi narasumber | Pelanggaran UU PDP | Persetujuan narasumber, nama bisa disamarkan ke publik, retensi data |
+
+## 10. Model bisnis (rancangan)
+
+Harga belum ditetapkan. Pembagian fitur:
+
+| Fitur | Publik (gratis) | Organisasi (berlangganan) | Instansi pemerintah (kontrak tahunan) |
+|---|---|---|---|
+| Berkas publik | Maks. 3 aktif | Ya | Ya |
+| Pemeriksaan sumber + penilaian AI | Kuota bulanan | Kuota lebih besar | Sesuai kontrak |
+| Garis penilaian, catatan audit | Ya | Ya | Ya |
+| Ruang kerja privat, peran, SSO/domain | - | Ya | Ya |
+| Saksi internal, panel peninjau, banding | - | Ya | Ya |
+| Ekspor laporan rapat | - | Ya | Ya |
+| Portal konsultasi publik beridentitas instansi | - | - | Ya |
+| Pool saksi warga terverifikasi | - | - | Ya |
+| Integrasi sistem aduan (API) | - | - | Ya |
+
+Alasan pembagian: biaya terbesar adalah panggilan AI, jadi kuota AI menjadi pembeda utama. Fitur kepercayaan (saksi, panel, audit ekspor) adalah nilai jual untuk instansi yang ingin terlihat transparan.
+
+Risiko [Kemungkinan Besar]: pengadaan pemerintah biasanya lewat e-katalog/LKPP dan butuh syarat seperti penyimpanan data di Indonesia. Ini perlu dicek sebelum menjual ke instansi.

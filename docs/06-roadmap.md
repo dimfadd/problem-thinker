@@ -7,7 +7,8 @@ Status: draf v0.1, 23 Oktober 2026. Urutan dan cakupan bisa berubah setelah uji 
 - [x] Rancangan produk, sistem, penilaian & anti-kecurangan, UI/UX, landing page
 - [x] Landing page dengan simulasi di browser
 - [x] Uji logika simulasi (`npm test`)
-- [ ] Hubungkan repo ke Vercel (dilakukan pemilik repo, langkah di README)
+- [x] Hubungkan repo ke Vercel (problem-thinker.vercel.app)
+- [ ] Merge PR #1 ke `main` supaya production mengikuti `main`
 
 ## Fase 1: MVP
 
@@ -32,10 +33,10 @@ Selesai bila: satu ruang kerja uji bisa menjalankan satu berkas dari draf sampai
 
 ## Fase 3: Skala
 
-- Klaster usulan mirip, ekspor PDF, API integrasi, multi-bahasa
+- Klaster usulan mirip (tampilan tiga lapis), ekspor PDF, API integrasi, multi-bahasa, pembayaran langganan
 
 ## Pertanyaan terbuka
 
 1. ~~Siapa yang memverifikasi sumber di berkas publik?~~ Diputuskan 2026-10-23: AI dulu, pemilik berkas sebagai cadangan, saksi independen untuk verifikasi lanjutan (dokumen 03 bagian 5). Sisa pertanyaan: dari mana pool saksi untuk berkas publik di awal, saat penggunanya masih sedikit?
 2. Apakah publik boleh melihat garis penilaian berkas pemerintah, atau hanya instansi?
-3. Model bisnis: gratis untuk publik/organisasi kecil, berbayar untuk instansi dan perusahaan?
+3. ~~Model bisnis~~ Arah diputuskan 2026-10-23: gratis untuk publik, berlangganan untuk organisasi/perusahaan, kontrak tahunan untuk instansi (dokumen 01 bagian 10). Sisa: angka harga dan kuota, jalur pengadaan pemerintah.

@@ -22,6 +22,8 @@ export interface ContextItem {
   statement: string;
   sourceType: SourceType;
   sourceRef: string;
+  /** Tautan sumber asli, bila ada. */
+  sourceUrl?: string;
   level: EvidenceLevel;
   aiCheck: AiCheck;
   /** Jumlah saksi independen yang membenarkan. */

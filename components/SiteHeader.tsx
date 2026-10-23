@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 const NAV = [
-  { href: "#simulasi", label: "Simulasi" },
-  { href: "#penilaian", label: "Cara menilai" },
+  { href: "#cara-kerja", label: "Cara kerja" },
+  { href: "#coba", label: "Coba" },
+  { href: "#peran-ai", label: "Peran AI" },
   { href: "#kecurangan", label: "Anti-kecurangan" },
-  { href: "#pengguna", label: "Untuk siapa" },
-  { href: "#status", label: "Status" },
+  { href: "#paket", label: "Paket" },
 ];
 
 type Theme = "light" | "dark";

@@ -71,6 +71,9 @@ Warna bukan satu-satunya penanda: setiap titik juga punya skor angka dan label, 
 | Detail skor | Angka besar serif, kutipan usulan, 4 meter rubrik, daftar alasan. |
 | Pemberitahuan | Garis kiri berwarna: hijau (berhasil), kuningan (ditandai), marun (ditolak/karantina). |
 | Catatan audit | `<details>` yang bisa dibuka, waktu dalam mono. |
+| Tur animasi | Panggung berkas + daftar langkah dengan bilah progres kuningan. Efek pindai AI berupa sapuan kuningan tipis di baris konteks. |
+| Tampilan ribuan usulan | Histogram abu-abu di atas garis, gelembung klaster berwarna sesuai posisi, penanda "Anda" kuningan. Lihat dokumen 05 bagian 3b. |
+| Tabel paket | Baris fitur x 3 kolom paket; centang hijau, tanda "-" untuk tidak termasuk, teks kecil untuk kuota. |
 
 Status wajib di setiap tampilan data: kosong, memuat, galat.
 
@@ -147,10 +150,13 @@ Gutter 16px di HP, 32px di tablet ke atas. Lebar isi maks 1160px.
 | Gerak | Tujuan |
 |---|---|
 | Titik meluncur ke posisi skor (0,7 detik) | Menunjukkan bahwa posisi adalah hasil penilaian |
+| Tur 7 langkah berjalan sendiri | Menjelaskan alur produk tanpa harus dibaca panjang; bisa dijeda dan dikendalikan |
+| Sapuan pindai di konteks | Menunjukkan AI sedang memeriksa sumber |
+| Titik ditolak bergetar lalu memudar | Menunjukkan kecurangan disaring |
 | Bilah memuat saat menilai | Memberi tahu ada proses yang sedang berjalan |
 | Hover tombol | Umpan balik dasar |
 
-Tidak ada animasi muncul-saat-scroll; halaman ini dibaca, bukan ditonton.
+Di luar tur, tidak ada animasi muncul-saat-scroll. Tur adalah satu-satunya bagian yang "ditonton", sisanya dibaca. Dial MOTION naik ke 2 karena tur ini.
 
 ## 10. Tema
 

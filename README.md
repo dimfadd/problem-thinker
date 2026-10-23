@@ -2,17 +2,17 @@
 
 Aplikasi web untuk menyusun satu masalah menjadi **berkas**: konteks wajib bersumber, usulan solusi dinilai AI terhadap masalah + konteks, lalu ditampilkan di garis penilaian dari "jauh dari solusi" ke "dekat dengan solusi". Untuk pemerintah, perusahaan, dan organisasi.
 
-Status: **v0.1, tahap rancangan.** Isinya landing page dengan simulasi di browser. Belum ada login, database, atau AI sungguhan.
+Status: **v0.3, tahap rancangan.** Isinya landing page dengan tur animasi dan simulasi di browser (kasus karhutla). Belum ada login, database, atau AI sungguhan.
 
 ## Dokumen rancangan
 
 | Dokumen | Isi |
 |---|---|
-| [01 Rancangan produk](docs/01-rancangan-produk.md) | Visi, peran, siklus berkas, fitur per fase, risiko |
+| [01 Rancangan produk](docs/01-rancangan-produk.md) | Visi, peran, siklus berkas, fitur per fase, risiko, model bisnis |
 | [02 Rancangan sistem](docs/02-rancangan-sistem.md) | Arsitektur, skema database, RLS, alur penilaian, rute, keamanan, deploy |
 | [03 Penilaian AI & anti-kecurangan](docs/03-penilaian-ai-dan-anti-fraud.md) | Rubrik, prompt penilai, kalibrasi, daftar AF-00 sampai AF-12 |
 | [04 Rancangan UI/UX](docs/04-rancangan-ui-ux.md) | Huruf, warna + kontras, komponen, wireframe layar, responsif, aksesibilitas |
-| [05 Rancangan landing page](docs/05-rancangan-landing-page.md) | Struktur halaman, spesifikasi simulasi, keputusan desain |
+| [05 Rancangan landing page](docs/05-rancangan-landing-page.md) | Struktur halaman, skenario karhutla, tur animasi, tampilan ribuan usulan, keputusan desain |
 | [06 Roadmap](docs/06-roadmap.md) | Fase 0 sampai 3, pertanyaan terbuka |
 | [LOG](docs/LOG.md) | Log pengerjaan dan keputusan |
 

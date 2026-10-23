@@ -13,17 +13,20 @@ export const LIMITS = {
   duplicateThreshold: 0.6,
 };
 
+// Kosakata umum untuk heuristik simulasi (bukan khusus satu kasus).
 const ACTION_ROOTS = [
-  "bangun", "lebar", "melebar", "normalisasi", "keruk", "bongkar", "tertib", "jadwal",
-  "angkut", "pasang", "bentuk", "libat", "alokasi", "anggar", "latih", "awas", "pantau",
-  "rawat", "tanam", "relokasi", "sosialisasi", "koordinasi", "tetap", "terap", "wajib",
-  "bersih", "tambah", "evaluasi", "ajukan", "diajukan",
+  "bangun", "lebar", "normalisasi", "bongkar", "tertib", "jadwal", "angkut", "pasang",
+  "bentuk", "libat", "alokasi", "anggar", "latih", "awas", "pantau", "rawat", "tanam",
+  "relokasi", "sosialisasi", "koordinasi", "tetap", "terap", "wajib", "tambah", "evaluasi",
+  "ajukan", "audit", "cabut", "beri", "sediakan", "patroli", "padam", "basah", "sekat",
+  "terbit", "revisi", "atur", "denda", "gugat", "tindak", "umumkan", "buka", "pulih",
+  "restorasi", "subsidi", "insentif",
 ];
-const TIME_PATTERN = /\b\d+\s*(hari|minggu|bulan|tahun|triwulan|kali)\b|\b(mingguan|bulanan|tahunan|triwulan)\b/;
-const PARTY_PATTERN = /\b(dinas|pupr|bpbd|dlh|rw|rt|kelurahan|pemkot|pemda|warga|pengembang|karang taruna|tim)\b/;
+const TIME_PATTERN = /\b\d+\s*(hari|minggu|bulan|tahun|triwulan|kali|jam)\b|\b(mingguan|bulanan|tahunan|triwulan|setiap musim|tiap musim)\b/;
+const PARTY_PATTERN = /\b(dinas|pupr|bpbd|bnpb|bmkg|klhk|kementerian|menteri|polri|kejaksaan|pemda|pemprov|pemkab|pemkot|gubernur|bupati|desa|warga|petani|pengembang|perusahaan|pemegang konsesi|kelurahan|rw|rt|tim|satgas|manggala agni|presiden|dpr|dprd)\b/;
 const RISK_ROOTS = [
-  "risiko", "dampak", "kompensasi", "relokasi", "biaya", "anggar", "apbd", "sementara",
-  "evaluasi", "indikator", "ukur", "jika",
+  "risiko", "dampak", "kompensasi", "relokasi", "biaya", "anggar", "apbn", "apbd",
+  "sementara", "evaluasi", "indikator", "ukur", "jika", "penolakan", "tolak", "transisi",
 ];
 
 const INJECTION_PATTERNS: RegExp[] = [
@@ -58,6 +61,7 @@ export function scoreProposal(
   let conceptHits = 0;
   const covered: string[] = [];
   const missed: string[] = [];
+  const weak: string[] = [];
   contexts.forEach((ctx, i) => {
     const w = LEVEL_WEIGHT[ctx.level];
     totalWeight += w;
@@ -65,6 +69,7 @@ export function scoreProposal(
     if (hits.length >= 1) {
       coveredWeight += w;
       covered.push(`[${i + 1}] ${ctx.concept}`);
+      if (ctx.level === 0) weak.push(`[${i + 1}]`);
     } else {
       missed.push(`[${i + 1}] ${ctx.concept}`);
     }
@@ -100,6 +105,9 @@ export function scoreProposal(
 
   if (covered.length > 0) reasons.push(`Membahas konteks ${covered.join(", ")}.`);
   if (missed.length > 0) reasons.push(`Belum menyentuh ${missed.join(", ")}.`);
+  if (weak.length > 0) {
+    reasons.push(`Bersandar pada konteks ${weak.join(", ")} yang belum terverifikasi atau diberi peringatan AI, jadi bobotnya kecil.`);
+  }
   reasons.push(
     actions >= 3
       ? "Langkah tindakan cukup jelas."

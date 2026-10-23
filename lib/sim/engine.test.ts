@@ -18,7 +18,7 @@ function seed(): Proposal[] {
 
 test("usulan lengkap lebih tinggi daripada usulan normatif", () => {
   const strong = scoreProposal(SEED_PROPOSALS[0].text, INITIAL_CONTEXTS).score;
-  const vague = scoreProposal(SEED_PROPOSALS[2].text, INITIAL_CONTEXTS).score;
+  const vague = scoreProposal(SEED_PROPOSALS[4].text, INITIAL_CONTEXTS).score;
   assert.ok(strong >= 75, `strong=${strong}`);
   assert.ok(vague <= 25, `vague=${vague}`);
 });

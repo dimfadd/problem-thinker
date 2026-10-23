@@ -2,6 +2,39 @@
 
 Catatan kronologis: apa yang dikerjakan, keputusan yang diambil, dan alasannya. Entri terbaru di atas.
 
+## 2026-10-23, v0.3 landing page karhutla, tur animasi, skala, paket
+
+### Dikerjakan
+
+- Skenario simulasi diganti ke karhutla. 4 konteks merangkum berita nyata dengan tautan (Setkab, Bisnis.com, Antara, Mongabay; angka kerugian Bank Dunia via CNBC). 1 konteks contoh klaim media sosial yang diberi peringatan AI "melebihi sumber".
+- 5 usulan contoh tersebar dari merah ke hijau (0, 15, 40, 60, 93).
+- Tur animasi 7 langkah (`components/Walkthrough.tsx`) yang berjalan sendiri saat terlihat.
+- Tampilan ribuan usulan (`components/ScaleView.tsx`): histogram + klaster + posisi Anda.
+- Bagian baru: Peran AI, Paket. Navigasi diperbarui.
+- Kosakata heuristik penilai dibuat umum (tidak lagi khusus kasus banjir); alasan baru saat usulan bersandar pada konteks berperingatan.
+- Simulasi interaktif: tautan sumber asli, tombol mulai di garis kosong, catatan saat temuan AI tidak bisa dibatalkan pemilik berkas.
+
+### Keputusan
+
+| Keputusan | Alasan |
+|---|---|
+| Perusahaan asing ditulis "disegel/tersangka", bukan "pembakar" | Sesuai status hukum yang diberitakan; menghindari tuduhan yang belum diputus pengadilan |
+| Garis titik per akun diganti tiga lapis saat usulan > 50 | Titik bertumpuk tidak terbaca; klaster tetap mempertahankan gagasan gelembung dari sketsa awal |
+| Harga paket tidak ditampilkan | Belum ditetapkan; angka karangan menyesatkan |
+| Tur berjalan sendiri hanya saat terlihat dan tidak untuk `prefers-reduced-motion` | Tidak membuang gerak di luar layar; menghormati pengaturan aksesibilitas |
+
+### Diagnosis "simulasi tidak berjalan" di Vercel
+
+- Situs Vercel tidak bisa dibuka dari sandbox pengerjaan (domain diblokir), jadi penyebab pasti belum terkonfirmasi.
+- Status deploy Vercel untuk commit `983089a` sukses; kode yang sama lulus uji browser lokal tanpa galat.
+- Dugaan utama: versi lama tidak bergerak sama sekali sampai pengunjung menekan "Kunci konteks, buka usulan", sehingga terlihat diam. Versi ini menambah tur yang berjalan sendiri dan tombol mulai di garis kosong.
+- Bug yang ditemukan dan diperbaiki saat pengujian ulang: pemicu putar otomatis tidak pernah aktif di HP karena seluruh tur lebih tinggi dari layar.
+
+### Verifikasi
+
+- `npm run typecheck`, `npm test` (13 lulus), `npm run build` lulus.
+- Playwright 375px dan 1280px, terang dan gelap: tur maju sendiri, semua langkah dirender, simulasi interaktif (5 aturan anti-kecurangan, verifikasi berlapis), klaster tanpa tumpang tindih, tanpa scroll horizontal, tanpa galat konsol.
+
 ## 2026-10-23, v0.2 verifikasi sumber berlapis
 
 ### Keputusan

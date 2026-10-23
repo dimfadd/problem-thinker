@@ -148,6 +148,10 @@ Fungsi acuan: `deriveLevel` di `lib/sim/engine.ts`, diuji di `lib/sim/engine.tes
 
 Catatan penting: menyembunyikan skor dan isi usulan orang lain selama fase usulan adalah penangkal jiplakan paling murah dan paling efektif. Di simulasi landing page skor sengaja langsung ditampilkan supaya alurnya terlihat.
 
+## 6a. Klaster usulan mirip
+
+Untuk berkas dengan banyak usulan, embedding usulan dikelompokkan (misal HDBSCAN atau k-means di atas pgvector) menjadi klaster. AI memberi label pendek per klaster. Klaster dipakai untuk tampilan (dokumen 05 bagian 3b) dan untuk memudahkan panel membaca, tidak untuk mengubah skor individual.
+
 ## 7. Implementasi simulasi saat ini
 
 File `lib/sim/engine.ts` meniru bentuk keluaran penilai dengan heuristik (pencocokan akar kata, kata tindakan, angka, kata risiko). Ini **bukan** AI dan tidak dipakai di produksi. Gunanya:

@@ -259,6 +259,11 @@ export function Simulator() {
             <span className="mono step-no">{PROBLEM.number}</span>
           </div>
           <p className="problem-body">{PROBLEM.body}</p>
+          <p className="ctx-source">
+            <a href={PROBLEM.bodySource.url} target="_blank" rel="noopener noreferrer">
+              {PROBLEM.bodySource.label}
+            </a>
+          </p>
           <div className="meta-row">
             <span>Pemilik berkas: {PROBLEM.owner}</span>
             <span>Usulan: terbuka untuk publik</span>
@@ -271,7 +276,14 @@ export function Simulator() {
                 <div>
                   <p className="ctx-statement">{c.statement}</p>
                   <p className="ctx-source">
-                    {SOURCE_LABEL[c.sourceType]}: {c.sourceRef}
+                    {SOURCE_LABEL[c.sourceType]}:{" "}
+                    {c.sourceUrl ? (
+                      <a href={c.sourceUrl} target="_blank" rel="noopener noreferrer">
+                        {c.sourceRef}
+                      </a>
+                    ) : (
+                      c.sourceRef
+                    )}
                   </p>
                   <span className="level">
                     <LevelBars level={c.level} />
@@ -296,6 +308,11 @@ export function Simulator() {
                         <button type="button" className="chip" onClick={() => ownerConfirm(c.id)}>
                           Konfirmasi sebagai pemilik berkas
                         </button>
+                      )}
+                      {c.aiCheck.status === "bertentangan" && (
+                        <span className="hint" style={{ flexBasis: "100%", color: "var(--ink-2)", fontSize: "0.8125rem" }}>
+                          Pemilik berkas tidak bisa membatalkan temuan ini. Hanya {MIN_WITNESSES} saksi independen yang bisa.
+                        </span>
                       )}
                       <button type="button" className="chip" onClick={() => addWitness(c.id)}>
                         Saksi membenarkan ({c.witnesses}/{MIN_WITNESSES})
@@ -408,9 +425,16 @@ export function Simulator() {
             </div>
             {placed.length === 0 ? (
               <div className="empty" style={{ marginTop: 12 }}>
-                {phase === "konteks"
-                  ? "Belum ada usulan. Garis terisi setelah fase konteks dikunci dan usulan dibuka."
-                  : "Belum ada usulan yang lolos penilaian."}
+                {phase === "konteks" ? (
+                  <>
+                    <p>Belum ada usulan. Garis terisi setelah konteks dikunci dan usulan dibuka.</p>
+                    <button type="button" className="btn btn-primary" style={{ marginTop: 12 }} onClick={openProposals}>
+                      Kunci konteks, buka usulan
+                    </button>
+                  </>
+                ) : (
+                  "Belum ada usulan yang lolos penilaian."
+                )}
               </div>
             ) : (
               <div className="scale-field" style={{ height: laneCount * 38 + 8, marginTop: 10 }} role="group" aria-label="Titik usulan pada garis">
