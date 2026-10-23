@@ -8,7 +8,7 @@ Status: draf v0.1, 23 Oktober 2026. Urutan dan cakupan bisa berubah setelah uji 
 - [x] Landing page dengan simulasi di browser
 - [x] Uji logika simulasi (`npm test`)
 - [x] Hubungkan repo ke Vercel (problem-thinker.vercel.app)
-- [ ] Merge PR #1 ke `main` supaya production mengikuti `main`
+- [x] Merge PR #1 ke `main`; sejak 2026-10-23 setiap update di-push langsung ke `main`
 
 ## Fase 1: MVP
 
