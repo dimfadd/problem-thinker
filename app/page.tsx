@@ -29,10 +29,10 @@ const RUBRIC = [
 ];
 
 const LEVEL_NOTE: Record<EvidenceLevel, string> = {
-  0: "Narasumber disebut tapi belum terverifikasi. Bobot 0,5.",
-  1: "URL berita atau publikasi yang bisa dibuka siapa saja. Bobot 1.",
-  2: "Dokumen diunggah dan bisa diperiksa peninjau. Bobot 1,5.",
-  3: "Akun narasumber terverifikasi atau dikonfirmasi moderator. Bobot 2.",
+  0: "AI ragu atau tidak bisa mengakses sumber, dan belum ada yang mengonfirmasi. Bobot 0,5.",
+  1: "AI memberi peringatan, lalu pemilik berkas mengonfirmasi sendiri. Pemilik berkas pihak berkepentingan, jadi bobotnya 1.",
+  2: "AI membuka sumber publik atau dokumen terunggah dan isinya cocok dengan pernyataan. Bobot 1,5.",
+  3: "Minimal 2 saksi independen membenarkan. Satu-satunya cara mengesampingkan temuan AI \"bertentangan\". Bobot 2.",
 };
 
 const FRAUD = [
@@ -42,7 +42,7 @@ const FRAUD = [
   { code: "AF-04", pattern: "Memerintah penilai AI (prompt injection)", guard: "Usulan diperlakukan sebagai data, bukan instruksi. Kalimat perintah membuat usulan dikarantina untuk moderator.", demo: true },
   { code: "AF-05", pattern: "Menumpuk kata kunci dari konteks", guard: "Rubrik memotong skor usulan yang mengulang konteks tanpa langkah tindakan.", demo: true },
   { code: "AF-06", pattern: "Memakai banyak akun (sybil)", guard: "Verifikasi email dan nomor HP. Organisasi memakai SSO atau undangan per domain. Sinyal perangkat dan IP dipantau.", demo: false },
-  { code: "AF-07", pattern: "Menggiring hasil lewat konteks berat sebelah", guard: "Konteks wajib bersumber, berjenjang bukti, bisa dibantah, dan dikunci sebelum usulan dibuka.", demo: true },
+  { code: "AF-07", pattern: "Menggiring hasil lewat konteks berat sebelah", guard: "Konteks wajib bersumber dan diperiksa AI. Konfirmasi pemilik berkas berbobot rendah; bobot tertinggi butuh 2 saksi independen. Konteks dikunci sebelum usulan dibuka.", demo: true },
   { code: "AF-08", pattern: "Mengedit usulan setelah dinilai", guard: "Usulan terkunci setelah dinilai. Edit menjadi versi baru yang dinilai ulang, riwayatnya terlihat.", demo: false },
   { code: "AF-09", pattern: "Skor berubah saat dinilai ulang", guard: "Model, prompt, dan rubrik dikunci per berkas. Alasan penilaian disimpan dan bisa diajukan banding.", demo: false },
 ];
@@ -190,6 +190,7 @@ export default function Home() {
                 </p>
                 <p>Untuk keputusan penting, usulan teratas ditinjau panel manusia sebelum dipakai.</p>
                 <h3 style={{ marginTop: 20 }}>Tingkat bukti konteks</h3>
+                <p>Sumber diperiksa AI dulu. Kalau AI ragu atau gagal mengakses, peringatannya tetap terlihat publik, lalu pemilik berkas dan saksi menjadi lapis berikutnya.</p>
                 <ul className="levels">
                   {([3, 2, 1, 0] as EvidenceLevel[]).map((l) => (
                     <li key={l}>
@@ -270,7 +271,7 @@ export default function Home() {
                   <dt>Yang mengusulkan</dt>
                   <dd>Publik terverifikasi, atau warga wilayah tertentu.</dd>
                   <dt>Yang memverifikasi konteks</dt>
-                  <dd>Moderator instansi.</dd>
+                  <dd>AI lebih dulu, lalu pemilik berkas dan saksi independen dari publik terverifikasi.</dd>
                 </dl>
                 <p>Untuk konsultasi kebijakan, aduan wilayah, dan musyawarah perencanaan.</p>
               </div>
@@ -280,7 +281,7 @@ export default function Home() {
                   <dt>Yang mengusulkan</dt>
                   <dd>Karyawan lewat SSO atau undangan domain, bisa dibatasi per divisi.</dd>
                   <dt>Yang memverifikasi konteks</dt>
-                  <dd>Pemilik berkas atau manajer yang ditunjuk.</dd>
+                  <dd>AI lebih dulu, lalu pemilik berkas dan saksi dari karyawan di luar tim pemilik berkas.</dd>
                 </dl>
                 <p>Berkas privat di dalam ruang kerja. Untuk masalah operasional, proses, dan layanan pelanggan.</p>
               </div>
@@ -290,7 +291,7 @@ export default function Home() {
                   <dt>Yang mengusulkan</dt>
                   <dd>Anggota undangan, atau dibuka untuk publik.</dd>
                   <dt>Yang memverifikasi konteks</dt>
-                  <dd>Pengurus.</dd>
+                  <dd>AI lebih dulu, lalu pemilik berkas dan saksi dari anggota.</dd>
                 </dl>
                 <p>Untuk program kerja, advokasi, dan keputusan bersama anggota.</p>
               </div>
@@ -331,7 +332,7 @@ export default function Home() {
                     "Login dan ruang kerja organisasi",
                     "Berkas, konteks, dan usulan tersimpan di database",
                     "Penilaian dengan model AI sungguhan memakai rubrik di atas",
-                    "Unggah dokumen bukti dan verifikasi narasumber",
+                    "Pemeriksaan sumber oleh AI, unggah dokumen bukti, dan saksi",
                     "Panel tinjauan manusia dan banding skor",
                   ].map((t) => (
                     <li key={t}>

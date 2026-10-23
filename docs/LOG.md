@@ -2,6 +2,26 @@
 
 Catatan kronologis: apa yang dikerjakan, keputusan yang diambil, dan alasannya. Entri terbaru di atas.
 
+## 2026-10-23, v0.2 verifikasi sumber berlapis
+
+### Keputusan
+
+| Keputusan | Alasan | Alternatif yang ditolak |
+|---|---|---|
+| Sumber diperiksa AI lebih dulu (arahan pemilik produk) | Cepat, murah, konsisten untuk sumber publik | Moderator manusia untuk semua sumber |
+| Peringatan AI tetap tampil meski sudah dikonfirmasi manusia | Pembaca bisa menilai sendiri seberapa kuat buktinya | Menghapus peringatan setelah konfirmasi |
+| Konfirmasi pemilik berkas berbobot rendah (tingkat 1) dan tidak berlaku untuk temuan "bertentangan" | Pemilik berkas pihak berkepentingan, bisa menggiring hasil | Pemilik berkas sebagai verifikator penuh |
+| Saksi independen (min. 2, dipilih acak untuk berkas publik) untuk tingkat tertinggi | Menangkal pemilik berkas yang mengakali verifikasi (kekhawatiran pemilik produk) | Saksi dipilih pemilik berkas |
+| AI tidak login ke portal memakai akun siapa pun | Risiko kebocoran kredensial dan pelanggaran ketentuan situs; sumber berbalik login diunggah sebagai bukti | AI menyimpan kredensial portal |
+
+### Dikerjakan
+
+- Model `aiCheck`, `ownerConfirmed`, `witnesses` dan fungsi `deriveLevel` / `canOwnerConfirm` di `lib/sim/`.
+- Simulasi: label peringatan AI per konteks, tombol konfirmasi pemilik berkas dan saksi.
+- Landing page: penjelasan tingkat bukti dan verifikator per jenis ruang diperbarui.
+- Perbaikan bug: ID konteks baru bisa bentrok dengan ID konteks awal, sehingga konfirmasi mengenai konteks yang salah.
+- Dokumen 01, 02, 03, 05, 06 diperbarui. 13 uji lulus.
+
 ## 2026-10-23, v0.1 rancangan + landing page
 
 ### Dikerjakan

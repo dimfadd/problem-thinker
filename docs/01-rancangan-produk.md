@@ -36,7 +36,8 @@ Target pengguna: pemerintah dan lembaga publik, perusahaan, organisasi dan komun
 | Ruang kerja (workspace) | Wadah milik satu organisasi/instansi/perusahaan. Punya anggota dan peran. |
 | Berkas | Satu masalah beserta konteks, usulan, dan catatan auditnya. Bernomor, misal `PT-2026-0007`. |
 | Konteks | Pernyataan fakta atau sebab yang menempel pada berkas, wajib bersumber. |
-| Tingkat bukti | 0 klaim belum diverifikasi, 1 rujukan publik, 2 dokumen terlampir, 3 sumber terverifikasi. |
+| Tingkat bukti | 0 belum terverifikasi, 1 dikonfirmasi pemilik berkas, 2 dicek AI, 3 disaksikan (lihat dokumen 03 bagian 5). |
+| Saksi | Akun independen yang membenarkan sebuah konteks, dengan nama dan dasar kesaksian tercatat. |
 | Usulan | Solusi yang diajukan satu akun untuk satu berkas. |
 | Garis penilaian | Visual sebaran skor usulan 0 sampai 100. |
 | Catatan audit | Log semua kejadian berkas: konteks masuk/ditolak, usulan dinilai/ditolak/dikarantina. |
@@ -47,7 +48,8 @@ Target pengguna: pemerintah dan lembaga publik, perusahaan, organisasi dan komun
 |---|---|---|
 | Pemilik ruang kerja | Ruang kerja | Atur anggota, peran, SSO/domain, kuota AI |
 | Pemilik berkas | Berkas | Buat berkas, atur siapa boleh menambah konteks/mengusulkan, ganti fase |
-| Moderator | Ruang kerja / berkas | Verifikasi sumber, tinjau karantina dan tanda, putuskan banding |
+| Moderator | Ruang kerja / berkas | Tinjau karantina, tanda, bantahan kesaksian; putuskan banding |
+| Saksi | Berkas | Membenarkan konteks bila memenuhi syarat independensi |
 | Kontributor konteks | Berkas | Menambah konteks bersumber, membantah konteks |
 | Pengusul | Berkas | Mengirim usulan (maks 3 aktif per berkas) |
 | Panel peninjau | Berkas | Meninjau usulan teratas sebelum dipakai keputusan |
@@ -60,7 +62,7 @@ DRAF -> KONTEKS DIBUKA -> USULAN DIBUKA (konteks dikunci) -> PENILAIAN DITUTUP -
                                                        \-> (opsional) TINJAUAN PANEL sebelum diumumkan
 ```
 
-- **Konteks dibuka**: konteks boleh ditambah dan dibantah. Moderator memverifikasi sumber.
+- **Konteks dibuka**: konteks boleh ditambah dan dibantah. Sumber diperiksa AI, lalu bila perlu dikonfirmasi pemilik berkas dan saksi.
 - **Usulan dibuka**: konteks dikunci. Usulan dinilai saat masuk, tetapi **skor dan isi usulan lain disembunyikan** dari pengusul (mencegah jiplakan).
 - **Penilaian ditutup**: tidak ada usulan baru. Garis penilaian dibuka untuk yang berhak melihat.
 - **Hasil diumumkan**: pemilik berkas menandai usulan yang dipakai, beserta alasannya.
@@ -74,7 +76,7 @@ Pemilik berkas boleh membuka ulang fase konteks; semua usulan lalu **dinilai ula
 - Daftar/masuk: email + kata sandi, magic link, Google. Verifikasi email wajib.
 - Ruang kerja: buat, undang anggota, peran dasar.
 - Berkas: buat, edit (saat draf), atur visibilitas (publik/privat ruang kerja) dan siapa yang boleh mengusulkan.
-- Konteks: tambah dengan sumber wajib (jenis + rujukan), URL tervalidasi, tingkat bukti 0/1.
+- Konteks: tambah dengan sumber wajib (jenis + rujukan), pemeriksaan sumber oleh AI dengan peringatan publik, konfirmasi pemilik berkas.
 - Usulan: kirim, batas 3 aktif, versi baru menggantikan versi lama.
 - Penilaian AI dengan rubrik 4 dimensi + alasan; antrean asinkron.
 - Anti-kecurangan: duplikat, batas laju, karantina injeksi, penanda jiplakan, penalti kata kunci.
@@ -82,7 +84,7 @@ Pemilik berkas boleh membuka ulang fase konteks; semua usulan lalu **dinilai ula
 
 ### Fase 2
 
-- Unggah dokumen bukti (tingkat 2), akun narasumber terverifikasi (tingkat 3).
+- Unggah dokumen bukti untuk diperiksa AI, saksi independen (tingkat 3), pool saksi acak.
 - Bantahan konteks dan alur moderasi.
 - Verifikasi nomor HP; SSO (Google Workspace / Microsoft) dan undangan per domain.
 - Panel peninjau dan banding skor.

@@ -1,6 +1,6 @@
 import { LEVEL_WEIGHT } from "./data.ts";
 import { extractRoots, matchesAnyRoot, similarity, tokenize } from "./text.ts";
-import type { ContextItem, EvidenceLevel, Proposal, Rubric, SourceType, Verdict } from "./types.ts";
+import type { AiCheck, ContextItem, EvidenceLevel, Proposal, Rubric, SourceType, Verdict } from "./types.ts";
 
 // Mesin penilaian SIMULASI. Di aplikasi nyata, penilaian dilakukan model AI
 // dengan rubrik yang sama (lihat docs/03-penilaian-ai-dan-anti-fraud.md).
@@ -123,7 +123,7 @@ export function scoreProposal(
 let counter = 0;
 export function makeId(prefix: string) {
   counter += 1;
-  return `${prefix}${counter}`;
+  return `${prefix}-${counter}`;
 }
 
 /**
@@ -251,8 +251,18 @@ export function buildContext(input: {
   }
   if (Object.keys(errors).length > 0) return { ok: false, errors };
 
-  const level: EvidenceLevel =
-    input.sourceType === "narasumber" ? 0 : input.sourceType === "dokumen" ? 2 : 1;
+  // Simulasi pemeriksaan AI. Di aplikasi nyata AI membuka URL publik atau
+  // membaca dokumen yang diunggah, lalu membandingkan isinya dengan pernyataan.
+  const isUrl = /^https?:\/\/\S+\.\S+/.test(sourceRef);
+  const aiCheck: AiCheck =
+    input.sourceType === "narasumber"
+      ? { status: "ragu", note: "Pernyataan narasumber tidak bisa diperiksa AI. Butuh konfirmasi atau saksi." }
+      : input.sourceType === "dokumen"
+        ? { status: "gagal_akses", note: "Dokumen belum diunggah, AI tidak punya bahan untuk diperiksa." }
+        : isUrl
+          ? { status: "cocok", note: "Simulasi: AI dianggap berhasil membuka URL dan isinya cocok." }
+          : { status: "gagal_akses", note: "Rujukan bukan URL atau dokumen, AI tidak bisa membukanya." };
+  const level: EvidenceLevel = aiCheck.status === "cocok" ? 2 : 0;
   const roots = extractRoots(statement);
   return {
     ok: true,
@@ -262,9 +272,29 @@ export function buildContext(input: {
       sourceType: input.sourceType,
       sourceRef,
       level,
+      aiCheck,
+      witnesses: 0,
+      ownerConfirmed: false,
       roots,
       concept: statement.split(/\s+/).slice(0, 4).join(" ").toLowerCase(),
       addedBy: input.addedBy,
     },
   };
+}
+
+/**
+ * Hitung ulang tingkat bukti dari tiga lapis verifikasi.
+ * Aturan kunci: pemilik berkas tidak bisa mengesampingkan temuan AI
+ * "bertentangan"; hanya saksi yang bisa.
+ */
+export function deriveLevel(ctx: Pick<ContextItem, "aiCheck" | "witnesses" | "ownerConfirmed">, minWitnesses = 2): EvidenceLevel {
+  if (ctx.witnesses >= minWitnesses) return 3;
+  if (ctx.aiCheck.status === "bertentangan") return 0;
+  if (ctx.aiCheck.status === "cocok") return 2;
+  if (ctx.ownerConfirmed) return 1;
+  return 0;
+}
+
+export function canOwnerConfirm(ctx: Pick<ContextItem, "aiCheck" | "ownerConfirmed">): boolean {
+  return !ctx.ownerConfirmed && (ctx.aiCheck.status === "ragu" || ctx.aiCheck.status === "gagal_akses");
 }

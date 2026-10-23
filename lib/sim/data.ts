@@ -1,4 +1,4 @@
-import type { Account, ContextItem, EvidenceLevel, SourceType } from "./types.ts";
+import type { Account, AiCheckStatus, ContextItem, EvidenceLevel, SourceType } from "./types.ts";
 
 // Semua data di file ini fiktif dan hanya untuk simulasi di landing page.
 
@@ -19,10 +19,17 @@ export const SOURCE_LABEL: Record<SourceType, string> = {
 };
 
 export const LEVEL_LABEL: Record<EvidenceLevel, string> = {
-  0: "Klaim belum diverifikasi",
-  1: "Rujukan publik",
-  2: "Dokumen terlampir",
-  3: "Sumber terverifikasi",
+  0: "Belum terverifikasi",
+  1: "Dikonfirmasi pemilik berkas",
+  2: "Dicek AI",
+  3: "Disaksikan",
+};
+
+export const AI_LABEL: Record<AiCheckStatus, string> = {
+  cocok: "AI: sumber terbuka, isi cocok",
+  ragu: "Peringatan AI: belum yakin",
+  gagal_akses: "Peringatan AI: sumber tidak bisa diakses",
+  bertentangan: "Peringatan AI: isi sumber bertentangan",
 };
 
 export const LEVEL_WEIGHT: Record<EvidenceLevel, number> = {
@@ -40,6 +47,9 @@ export const INITIAL_CONTEXTS: ContextItem[] = [
     sourceType: "dokumen",
     sourceRef: "Laporan kajian genangan BPBD kota 2025 (contoh), hlm. 14",
     level: 2,
+    aiCheck: { status: "cocok", note: "AI membaca dokumen terlampir; angka 2 m dan 0,8 m ada di hlm. 14." },
+    witnesses: 0,
+    ownerConfirmed: false,
     roots: ["drainase", "salur", "sempit", "lebar", "bangunan", "melati", "normalisasi", "gorong"],
     concept: "drainase menyempit",
     addedBy: "Admin kelurahan",
@@ -51,6 +61,9 @@ export const INITIAL_CONTEXTS: ContextItem[] = [
     sourceType: "narasumber",
     sourceRef: "Ketua RW 05 (akun narasumber terverifikasi, fiktif)",
     level: 3,
+    aiCheck: { status: "ragu", note: "Pernyataan lisan narasumber tidak bisa diperiksa AI." },
+    witnesses: 2,
+    ownerConfirmed: true,
     roots: ["sampah", "pintu", "angkut", "saring", "truk", "bersih"],
     concept: "sampah di pintu air",
     addedBy: "Ketua RW 05",
@@ -62,6 +75,9 @@ export const INITIAL_CONTEXTS: ContextItem[] = [
     sourceType: "berita",
     sourceRef: "https://contoh-media-lokal.id/alih-fungsi-lahan (URL contoh)",
     level: 1,
+    aiCheck: { status: "gagal_akses", note: "Halaman berita meminta langganan, AI tidak bisa membacanya." },
+    witnesses: 0,
+    ownerConfirmed: true,
     roots: ["resap", "lahan", "perumahan", "pengembang", "biopori", "retensi", "hijau", "tanam"],
     concept: "hilangnya lahan resapan",
     addedBy: "Akun publik",
@@ -113,3 +129,6 @@ export const QUICK_EXAMPLES = {
   spam:
     "drainase sampah resapan drainase saluran sampah pintu air resapan lahan banjir drainase saluran sampah resapan",
 };
+
+/** Saksi minimal agar konteks naik ke tingkat "Disaksikan". */
+export const MIN_WITNESSES = 2;

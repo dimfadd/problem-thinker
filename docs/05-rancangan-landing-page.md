@@ -30,13 +30,13 @@ Data awal (fiktif): berkas `PT-2026-0007` "Banjir tahunan di Kelurahan Sukamaju"
 
 | No | Pernyataan | Sumber | Tingkat |
 |---|---|---|---|
-| [1] | Drainase menyempit dari 2 m ke 0,8 m | Dokumen resmi | 2 |
-| [2] | Sampah menumpuk di pintu air, angkut seminggu sekali | Narasumber terverifikasi | 3 |
-| [3] | Lahan resapan beralih jadi perumahan | Berita (URL) | 1 |
+| [1] | Drainase menyempit dari 2 m ke 0,8 m | Dokumen resmi, AI cocok | 2 |
+| [2] | Sampah menumpuk di pintu air, angkut seminggu sekali | Narasumber, AI ragu, 2 saksi | 3 |
+| [3] | Lahan resapan beralih jadi perumahan | Berita (URL), AI gagal akses (paywall), dikonfirmasi pemilik berkas | 1 |
 
 Alur:
 
-1. **Fase konteks.** Pengunjung bisa menambah konteks. Validasi: pernyataan >= 30 karakter, rujukan wajib, jenis berita wajib URL. Narasumber yang ditambahkan pengunjung masuk tingkat 0.
+1. **Fase konteks.** Pengunjung bisa menambah konteks. Validasi: pernyataan >= 30 karakter, rujukan wajib, jenis berita wajib URL. AI (simulasi) memeriksa sumber: URL dianggap cocok, dokumen tanpa unggahan dan narasumber memicu peringatan. Konteks berperingatan punya tombol "Konfirmasi sebagai pemilik berkas" (naik ke tingkat 1) dan "Saksi membenarkan" (2 saksi = tingkat 3).
 2. **Kunci konteks, buka usulan.** 4 usulan akun simulasi dinilai terhadap konteks saat itu (termasuk konteks tambahan pengunjung) dan muncul di garis.
 3. **Kirim usulan.** Jeda 0,9 detik (status memuat), lalu salah satu hasil: dinilai, ditandai, ditolak, atau dikarantina.
 4. **Pilih titik** untuk melihat rincian rubrik dan alasan.

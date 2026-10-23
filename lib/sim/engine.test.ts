@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { ACCOUNTS, INITIAL_CONTEXTS, QUICK_EXAMPLES, SEED_PROPOSALS } from "./data.ts";
-import { assignLanes, buildContext, evaluateSubmission, scoreProposal } from "./engine.ts";
+import { assignLanes, buildContext, canOwnerConfirm, deriveLevel, evaluateSubmission, scoreProposal } from "./engine.ts";
 import type { Proposal } from "./types.ts";
 
 const label = (id: string) => ACCOUNTS.find((a) => a.id === id)?.label ?? id;
@@ -86,4 +86,36 @@ test("usulan keempat dari akun yang sama ditolak AF-02", () => {
   const fourth = evaluateSubmission({ text: "Latih karang taruna memantau tinggi air di 4 titik dan laporkan ke BPBD setiap hari selama musim hujan.", accountId: "you", accountLabel: label, proposals: ps, contexts: INITIAL_CONTEXTS, now: 2 });
   assert.equal(fourth.kind, "ditolak");
   if (fourth.kind === "ditolak") assert.match(fourth.rule, /AF-02/);
+});
+
+test("verifikasi berlapis: AI, pemilik berkas, saksi", () => {
+  const ragu = { aiCheck: { status: "ragu" as const, note: "" }, witnesses: 0, ownerConfirmed: false };
+  assert.equal(deriveLevel(ragu), 0);
+  assert.equal(canOwnerConfirm(ragu), true);
+  assert.equal(deriveLevel({ ...ragu, ownerConfirmed: true }), 1);
+  assert.equal(deriveLevel({ ...ragu, aiCheck: { status: "cocok", note: "" } }), 2);
+  assert.equal(deriveLevel({ ...ragu, witnesses: 2 }), 3);
+});
+
+test("pemilik berkas tidak bisa mengesampingkan temuan AI bertentangan", () => {
+  const konflik = { aiCheck: { status: "bertentangan" as const, note: "" }, witnesses: 0, ownerConfirmed: false };
+  assert.equal(canOwnerConfirm(konflik), false);
+  assert.equal(deriveLevel({ ...konflik, ownerConfirmed: true }), 0);
+  assert.equal(deriveLevel({ ...konflik, witnesses: 2 }), 3);
+});
+
+test("URL berita dicek AI, dokumen tanpa unggahan memicu peringatan", () => {
+  const a = buildContext({ statement: "Pompa air di rumah pompa utama rusak sejak awal tahun ini.", sourceType: "berita", sourceRef: "https://contoh.id/pompa", addedBy: "x" });
+  assert.ok(a.ok && a.context.level === 2 && a.context.aiCheck.status === "cocok");
+  const b = buildContext({ statement: "Pompa air di rumah pompa utama rusak sejak awal tahun ini.", sourceType: "dokumen", sourceRef: "Surat dinas no 12/2026", addedBy: "x" });
+  assert.ok(b.ok && b.context.level === 0 && b.context.aiCheck.status === "gagal_akses");
+});
+
+test("id konteks baru tidak bentrok dengan konteks awal", () => {
+  const ids = new Set(INITIAL_CONTEXTS.map((c) => c.id));
+  for (let i = 0; i < 5; i++) {
+    const r = buildContext({ statement: "Pompa air di rumah pompa utama rusak sejak awal tahun ini.", sourceType: "data", sourceRef: "https://contoh.id/x", addedBy: "x" });
+    assert.ok(r.ok && !ids.has(r.context.id));
+    if (r.ok) ids.add(r.context.id);
+  }
 });

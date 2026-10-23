@@ -3,14 +3,16 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ACCOUNTS,
+  AI_LABEL,
   INITIAL_CONTEXTS,
+  MIN_WITNESSES,
   LEVEL_LABEL,
   PROBLEM,
   QUICK_EXAMPLES,
   SEED_PROPOSALS,
   SOURCE_LABEL,
 } from "@/lib/sim/data.ts";
-import { LIMITS, assignLanes, buildContext, evaluateSubmission } from "@/lib/sim/engine.ts";
+import { LIMITS, assignLanes, buildContext, canOwnerConfirm, deriveLevel, evaluateSubmission } from "@/lib/sim/engine.ts";
 import type { ContextItem, EvidenceLevel, Proposal, SourceType } from "@/lib/sim/types.ts";
 
 type Phase = "konteks" | "usulan";
@@ -98,15 +100,40 @@ export function Simulator() {
     setCtxErrors({});
     setCtxStatement("");
     setCtxRef("");
+    const ok = res.context.aiCheck.status === "cocok";
     setCtxNotice({
-      tone: res.context.level === 0 ? "warn" : "ok",
-      title: `Konteks [${contexts.length + 1}] ditambahkan`,
-      body:
-        res.context.level === 0
-          ? "Tingkat bukti: klaim belum diverifikasi. Bobotnya setengah sampai narasumber terverifikasi."
-          : `Tingkat bukti: ${LEVEL_LABEL[res.context.level].toLowerCase()}.`,
+      tone: ok ? "ok" : "warn",
+      title: `Konteks [${contexts.length + 1}] ditambahkan. ${AI_LABEL[res.context.aiCheck.status]}`,
+      body: ok
+        ? `${res.context.aiCheck.note} Tingkat bukti: ${LEVEL_LABEL[res.context.level].toLowerCase()}.`
+        : `${res.context.aiCheck.note} Pemilik berkas bisa mengonfirmasi, tetapi bobot tertinggi hanya lewat ${MIN_WITNESSES} saksi independen.`,
     });
-    addLog("ok", "Konteks masuk", `[${contexts.length + 1}] dari ${SOURCE_LABEL[ctxType].toLowerCase()}, ${LEVEL_LABEL[res.context.level].toLowerCase()}.`);
+    addLog(ok ? "ok" : "warn", "Konteks masuk", `[${contexts.length + 1}] dari ${SOURCE_LABEL[ctxType].toLowerCase()}. ${AI_LABEL[res.context.aiCheck.status]}.`);
+  }
+
+  function updateContext(id: string, change: (c: ContextItem) => ContextItem, logText: (c: ContextItem, n: number) => string) {
+    const idx = contexts.findIndex((c) => c.id === id);
+    if (idx < 0 || phase !== "konteks") return;
+    const next = change(contexts[idx]);
+    const withLevel = { ...next, level: deriveLevel(next, MIN_WITNESSES) };
+    setContexts((cs) => cs.map((c) => (c.id === id ? withLevel : c)));
+    addLog("info", "Verifikasi", logText(withLevel, idx + 1));
+  }
+
+  function ownerConfirm(id: string) {
+    updateContext(
+      id,
+      (c) => ({ ...c, ownerConfirmed: true }),
+      (c, n) => `[${n}] dikonfirmasi pemilik berkas. Peringatan AI tetap tampil. Tingkat: ${LEVEL_LABEL[c.level].toLowerCase()}.`,
+    );
+  }
+
+  function addWitness(id: string) {
+    updateContext(
+      id,
+      (c) => ({ ...c, witnesses: Math.min(MIN_WITNESSES, c.witnesses + 1) }),
+      (c, n) => `[${n}] dibenarkan saksi ${c.witnesses}/${MIN_WITNESSES}. Tingkat: ${LEVEL_LABEL[c.level].toLowerCase()}.`,
+    );
   }
 
   function openProposals() {
@@ -250,6 +277,31 @@ export function Simulator() {
                     <LevelBars level={c.level} />
                     {LEVEL_LABEL[c.level]} · ditambahkan {c.addedBy}
                   </span>
+                  <p className="ai-check" data-status={c.aiCheck.status}>
+                    <strong>{AI_LABEL[c.aiCheck.status]}.</strong> {c.aiCheck.note}
+                  </p>
+                  {(c.ownerConfirmed || c.witnesses > 0) && (
+                    <p className="verify-meta">
+                      {[
+                        c.ownerConfirmed ? "Dikonfirmasi pemilik berkas" : null,
+                        c.witnesses > 0 ? `Saksi independen ${c.witnesses}/${MIN_WITNESSES}` : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  )}
+                  {phase === "konteks" && c.aiCheck.status !== "cocok" && c.witnesses < MIN_WITNESSES && (
+                    <div className="chips" style={{ marginTop: 8 }}>
+                      {canOwnerConfirm(c) && (
+                        <button type="button" className="chip" onClick={() => ownerConfirm(c.id)}>
+                          Konfirmasi sebagai pemilik berkas
+                        </button>
+                      )}
+                      <button type="button" className="chip" onClick={() => addWitness(c.id)}>
+                        Saksi membenarkan ({c.witnesses}/{MIN_WITNESSES})
+                      </button>
+                    </div>
+                  )}
                 </div>
               </li>
             ))}

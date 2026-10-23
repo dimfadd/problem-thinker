@@ -619,6 +619,30 @@ a {
   background: var(--navy);
 }
 
+.ai-check {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  padding: 6px 10px;
+  border-left: 3px solid var(--verdigris);
+  background: var(--verdigris-soft);
+  border-radius: 0 4px 4px 0;
+}
+.ai-check[data-status="ragu"],
+.ai-check[data-status="gagal_akses"] {
+  border-left-color: var(--brass);
+  background: var(--brass-soft);
+}
+.ai-check[data-status="bertentangan"] {
+  border-left-color: var(--oxblood);
+  background: var(--oxblood-soft);
+}
+.verify-meta {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
 /* form */
 .form {
   display: grid;

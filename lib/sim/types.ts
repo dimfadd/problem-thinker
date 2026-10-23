@@ -1,12 +1,21 @@
 export type SourceType = "berita" | "dokumen" | "narasumber" | "data";
 
 /**
- * Tingkat bukti sebuah konteks. Di aplikasi nyata tingkat ini naik
- * lewat verifikasi (unggah dokumen, akun narasumber terverifikasi, moderator).
- * 0 = klaim belum diverifikasi, 1 = rujukan publik (URL),
- * 2 = dokumen terlampir, 3 = sumber terverifikasi.
+ * Tingkat bukti sebuah konteks (lihat docs/03, bagian verifikasi sumber).
+ * 0 = belum terverifikasi (AI ragu / gagal akses, belum dikonfirmasi)
+ * 1 = dikonfirmasi pemilik berkas saja (pihak berkepentingan)
+ * 2 = dicek AI: sumber terbuka dan isinya cocok dengan pernyataan
+ * 3 = disaksikan: minimal 2 saksi independen membenarkan
  */
 export type EvidenceLevel = 0 | 1 | 2 | 3;
+
+/** Hasil pemeriksaan sumber oleh AI, lapis pertama verifikasi. */
+export type AiCheckStatus = "cocok" | "ragu" | "gagal_akses" | "bertentangan";
+
+export interface AiCheck {
+  status: AiCheckStatus;
+  note: string;
+}
 
 export interface ContextItem {
   id: string;
@@ -14,6 +23,10 @@ export interface ContextItem {
   sourceType: SourceType;
   sourceRef: string;
   level: EvidenceLevel;
+  aiCheck: AiCheck;
+  /** Jumlah saksi independen yang membenarkan. */
+  witnesses: number;
+  ownerConfirmed: boolean;
   /** Akar kata yang mewakili konsep konteks ini. */
   roots: string[];
   /** Label pendek konsep, dipakai di alasan penilaian. */

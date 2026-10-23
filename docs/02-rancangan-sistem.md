@@ -83,9 +83,33 @@ create table contexts (
   source_ref text not null check (char_length(source_ref) >= 8),
   source_file_path text,               -- fase 2, Supabase Storage
   evidence_level smallint not null default 0 check (evidence_level between 0 and 3),
-  verified_by uuid references profiles,
+  owner_confirmed_at timestamptz,      -- konfirmasi pemilik berkas (lapis 2)
   status text not null default 'active' check (status in ('active','disputed','withdrawn')),
   created_at timestamptz default now()
+);
+
+-- lapis 1: pemeriksaan sumber oleh AI (bisa lebih dari sekali, riwayat disimpan)
+create table source_checks (
+  id uuid primary key default gen_random_uuid(),
+  context_id uuid not null references contexts on delete cascade,
+  status text not null check (status in ('cocok','ragu','gagal_akses','bertentangan')),
+  note text not null,
+  fetched_url text,
+  content_hash text,                   -- snapshot isi sumber saat diperiksa
+  domain_first_seen boolean not null default false,
+  model text not null,
+  created_at timestamptz default now()
+);
+
+-- lapis 3: saksi
+create table context_witnesses (
+  context_id uuid references contexts on delete cascade,
+  witness_id uuid references profiles,
+  basis text not null,                 -- dasar kesaksian
+  assigned_randomly boolean not null,
+  status text not null default 'active' check (status in ('active','disputed','revoked')),
+  created_at timestamptz default now(),
+  primary key (context_id, witness_id)
 );
 
 create table context_disputes (
@@ -160,6 +184,8 @@ create table audit_log (
 - `proposals` insert hanya bila fase `proposals_open`, pengguna lolos `proposer_policy`, dan jumlah usulan aktif miliknya < 3.
 - `proposals` + `scores` milik orang lain **tidak bisa dibaca pengusul** selama `proposals_open`. Pemilik berkas dan moderator bisa.
 - `audit_log` hanya bisa ditulis oleh server (service role), tidak oleh klien.
+- `context_witnesses` insert ditolak bila saksi adalah pemilik berkas, pengirim konteks, atau pengusul di berkas yang sama.
+- `evidence_level` dihitung ulang di server dari `source_checks` terbaru, `owner_confirmed_at`, dan jumlah saksi aktif; klien tidak bisa menulisnya.
 
 ## 3. Alur pengiriman usulan
 
@@ -178,6 +204,18 @@ create table audit_log (
 ```
 
 Ambang 0,90 cosine adalah titik awal; dikalibrasi dengan data nyata. Simulasi di landing page memakai Jaccard kata dengan ambang 0,6 karena tidak ada embedding di browser.
+
+## 3a. Alur pemeriksaan sumber
+
+```
+1. Konteks disimpan (status pemeriksaan: menunggu)
+2. Worker: buka URL publik / dokumen terunggah (tanpa login, batas waktu, batas ukuran)
+3. Worker: ekstrak teks, hash isi, cek domain pertama kali terlihat
+4. Worker: Claude membandingkan pernyataan vs isi sumber (isi sumber = data, bukan instruksi)
+5. Simpan source_checks, hitung ulang evidence_level, tulis audit_log
+6. Bila ragu/gagal_akses: beri tahu pemilik berkas (bisa konfirmasi) dan buka permintaan saksi
+7. Bila bertentangan: hanya saksi yang bisa menaikkan tingkat
+```
 
 ## 4. Halaman dan rute
 
